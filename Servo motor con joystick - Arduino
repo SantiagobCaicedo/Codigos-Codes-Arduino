@@ -1,0 +1,131 @@
+//Hola! este es un pequeño codigo en donde usaremos el joystick para controlar un servo motor.
+
+//este codigo es creado por Santiago Caicedo y espero te ayude mucho!! recuerda visitar:
+
+//https://ekyletronics.blogspot.com/
+
+//las variables que usaremos son las siguientes: valorx, valory, ejex y ejey lo usaremos para asignarles los pines y hacer la lectura analoga del joystick.
+
+// dela y delas: son variables para los delay.
+
+// sw y valorsw: son parte de la lectura digital del switch del joystick.
+
+//Incluimos la libreria servo.h y el pin (11) para el servo.
+
+//.....................................................
+
+#include <Servo.h>
+
+int pinServo(11);
+
+int valorx;
+
+int valory;
+
+int ejex = A5;
+
+int ejey = A1;
+
+int dela = 200;
+
+int delas = 10;
+
+int sw = 10;
+
+int valorsw;
+
+Servo myServo;
+
+
+void setup() {
+
+  // inicializamos el switch del joystick y mencionamos los pines de las variables para los ejes, tambien iniciamos el servo.
+
+  //usamos el monitor serial para visualizar la posicion del joystick.
+
+  myServo.attach(pinServo);
+
+  pinMode(ejex, INPUT);
+
+  pinMode(ejey, INPUT);
+
+  pinMode(sw, INPUT);
+
+  digitalWrite(sw, HIGH);
+
+  Serial.begin(9600);
+
+}
+
+
+void loop() {
+
+  // le asignamos un nombre de variable para las lecturas analogas de las posiciones en eje x y eje y, asi mismo imprimimos en el monitor estos valores.
+
+  valorx = analogRead(ejex);
+
+  valory = analogRead(ejey);
+
+  valorsw = digitalRead(sw);
+
+  Serial.print("Valor eje x: ");
+
+  Serial.println(valorx);
+
+  Serial.print("Valor eje y: ");
+
+  Serial.println(valory);
+
+  Serial.print("Valor sw: ");
+
+  Serial.println(valorsw);
+
+  delay(delas);
+
+  //en esta siguiente parte, le indicamos al servo lo que hará cuando los ejes se muevan, en este caso usaremos solamente el eje x para controlar el servo y su switch
+
+  //el switch hará que el servo haga un giro completo de 90 grados
+
+  // se le pueden agregar mas cosas aqui, para hacer el circuito mas interesante.
+
+  if (valorsw == 0) {
+
+    for (int i = 0; i <= 180; i++)
+
+    {
+
+      myServo.write(i);
+
+      delay(delas);
+
+    }
+
+    for (int i = 179; i > 0; i--)
+
+    {
+
+      myServo.write(i);
+
+      delay(delas);
+
+    }
+
+  }
+
+  // cuando el valor del eje x sea menor a 500, el servo ira a 0 grados.
+
+  if (valorx <= 500) {
+
+    myServo.write(0);
+
+  }
+
+  // cuando el valor del eje x sea mayor a 500, el servo ira a 90 grados.
+
+  if (valorx >= 510) {
+
+    myServo.write(90);
+
+  }
+
+}
